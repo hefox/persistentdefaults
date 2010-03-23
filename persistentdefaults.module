@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function persistentdefaults_field_formatter_info() {
+  return array(
+    'persistent_text' => array(
+      'label' => t('Persistent default'),
+      'field types' => array('text'),
+      'multiple values' => CONTENT_HANDLE_CORE,
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function persistentdefaults_theme() {
+  return array(
+    'persistentdefaults_formatter_persistent_text' => array(
+      'arguments' => array('element'),
+      'file' => 'persistentdefaults.themes.inc',
+    ),
+  );
+}
+
+
+/**
+ * Implementation of hook_field_settings_alter().
+ */
+function persistentdefaults_widget_settings_alter(&$settings, $op, $widget) {
+  if($widget['module']!='text') return;
+  switch ($op) {
+    case 'form':
+      $settings['persistentdefaults'] = array(
+        '#title' => t('Persistent Default'),
+        '#type' => ($widget['type'] == 'text_textarea'?'textarea':'textfield'),
+        '#default_value' => (isset($widget['persistentdefaults'])? $widget['persistentdefaults'] : ''),
+        '#description' => t('Persistent default; will be used when formatter is used and value is empty.'),
+        '#weight' => -1,
+      );
+      if ($widget['rows']) $settings['persistentdefaults']['#rows'] = $widget['rows'];
+      break;
+    case 'save':
+      $settings[] = 'persistentdefaults';
+      break;
+  }
+}

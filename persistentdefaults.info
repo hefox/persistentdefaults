@@ -1,0 +1,5 @@
+name = Persistent defaults 
+description = Provides persistent defaults for some text fields. 
+package = Content
+core = 6.x
+dependencies[]  = text
